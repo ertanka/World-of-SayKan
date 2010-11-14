@@ -6,6 +6,8 @@ GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
        	screenHeight=height;
        	screenBPP=bpp;
        	createScreen();
+       	mouseListener=NULL;
+       	keyboardListener=NULL;
 	}
 GraphicsEngine::~GraphicsEngine(){
 	killSDL();
@@ -16,6 +18,51 @@ void GraphicsEngine::createScreen(){
 void GraphicsEngine::killSDL(){
     SDL_FreeSurface(screen);
 	SDL_Quit();
+}
+void GraphicsEngine::setMouseListener(MouseListener * mListen){
+	mouseListener=mListen;
+}
+void GraphicsEngine::setKeyboardListener(KeyboardListener *kListen){
+	keyboardListener=kListen;
+}
+KeyboardEvent* GraphicsEngine::defineKey(SDL_Event* ev){
+ 	switch(ev->key.keysym.sym){
+    	case SDLK_LEFT:
+    		return new KeyboardEvent(KeyboardEvent::LEFT);
+    		break;
+    	case SDLK_RIGHT:
+    		return new KeyboardEvent(KeyboardEvent::RIGHT);
+    		break;
+    	case SDLK_UP:
+			return new KeyboardEvent(KeyboardEvent::UP);
+    		break;
+    	case SDLK_DOWN:
+    		return new KeyboardEvent(KeyboardEvent::DOWN);
+    		break;
+    	default:
+    		return new KeyboardEvent();
+	}
+}
+void GraphicsEngine::checkEvents(){
+	while(SDL_PollEvent(&event)){
+		if(event.type == SDL_KEYDOWN){
+		    cout<<"Key Pressed!\n";
+			if(keyboardListener==NULL)
+				return;
+			keyboardListener->keyPressed(defineKey(&event));
+		}
+		if(event.type == SDL_KEYUP){
+			cout<<"Key Released!\n";
+			if(keyboardListener== NULL)
+				return;
+			keyboardListener->keyReleased(defineKey(&event));
+		}
+		if(event.type == SDL_QUIT){
+			cout<<"Quit Event Catched! Killing SDL\n";
+			killSDL();
+			exit(0);
+		}
+	}
 }
 void GraphicsEngine::setTitle(string title){
 	SDL_WM_SetCaption(title.c_str(),NULL);
@@ -34,10 +81,14 @@ bool GraphicsEngine::setBackground(string filename){
     return true;
 }
 void GraphicsEngine::addSurface(int x, int y, SDL_Surface * source, SDL_Surface * destination){
+	addSurface(x,y,source,destination,NULL);
+}
+void GraphicsEngine::addSurface(int x, int y,SDL_Surface * source, SDL_Surface * destination,SDL_Rect * part){
+
  	SDL_Rect offset;
  	offset.x=x;
  	offset.y=y;
- 	SDL_BlitSurface(source,NULL,destination,&offset);
+ 	SDL_BlitSurface(source,part,destination,&offset);
 }
 SDL_Surface * GraphicsEngine::loadImage(string filename){
 	SDL_Surface * temp=NULL;
