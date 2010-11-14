@@ -4,7 +4,9 @@ class KeyboardEvent{
 	private:
 		int key;
 	public:
-		static const int NOT_DEFINED=-1,LEFT=0,RIGHT=1,UP=2,DOWN=3;
+		static const int NUM0=0,NUM1=1,NUM2=2,NUM3=3,NUM4=4,NUM5=5,NUM6=6,NUM7=7,NUM8=8,NUM9=9;
+		static const int NOT_DEFINED=-1,LEFT=10,RIGHT=11,UP=12,DOWN=13;
+		static const int LSTAR=14,LMINUS=15;
 		KeyboardEvent(){
 			key=-NOT_DEFINED;
 		}

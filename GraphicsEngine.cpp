@@ -39,6 +39,42 @@ KeyboardEvent* GraphicsEngine::defineKey(SDL_Event* ev){
     	case SDLK_DOWN:
     		return new KeyboardEvent(KeyboardEvent::DOWN);
     		break;
+    	case SDLK_0:
+    		return new KeyboardEvent(KeyboardEvent::NUM0);
+    		break;
+    	case SDLK_1:
+    		return new KeyboardEvent(KeyboardEvent::NUM1);
+    		break;
+    	case SDLK_2:
+    		return new KeyboardEvent(KeyboardEvent::NUM2);
+    		break;
+    	case SDLK_3:
+    		return new KeyboardEvent(KeyboardEvent::NUM3);
+    		break;
+    	case SDLK_4:
+    		return new KeyboardEvent(KeyboardEvent::NUM4);
+    		break;
+    	case SDLK_5:
+    		return new KeyboardEvent(KeyboardEvent::NUM5);
+    		break;
+    	case SDLK_6:
+    		return new KeyboardEvent(KeyboardEvent::NUM6);
+    		break;
+    	case SDLK_7:
+    		return new KeyboardEvent(KeyboardEvent::NUM7);
+    		break;
+    	case SDLK_8:
+    		return new KeyboardEvent(KeyboardEvent::NUM8);
+    		break;
+    	case SDLK_9:
+    		return new KeyboardEvent(KeyboardEvent::NUM9);
+    		break;
+    	case SDLK_ASTERISK:
+    		return new KeyboardEvent(KeyboardEvent::LSTAR);
+    		break;
+    	case SDLK_MINUS:
+    		return new KeyboardEvent(KeyboardEvent::LMINUS);
+    		break;
     	default:
     		return new KeyboardEvent();
 	}
@@ -46,7 +82,6 @@ KeyboardEvent* GraphicsEngine::defineKey(SDL_Event* ev){
 void GraphicsEngine::checkEvents(){
 	while(SDL_PollEvent(&event)){
 		if(event.type == SDL_KEYDOWN){
-		    cout<<"Key Pressed!\n";
 			if(keyboardListener==NULL)
 				return;
 			keyboardListener->keyPressed(defineKey(&event));
