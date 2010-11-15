@@ -2,12 +2,14 @@
 
 GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
        	SDL_Init(SDL_INIT_EVERYTHING);
+       	upperLayer=NULL;
+       	background=NULL;
        	screenWidth=width;
        	screenHeight=height;
        	screenBPP=bpp;
        	createScreen();
-       	mouseListener=NULL;
-       	keyboardListener=NULL;
+       	screenObjects=new vector<GameObject*>;
+       	objectSurfaces=new vector<SDL_Surface*>;
 	}
 GraphicsEngine::~GraphicsEngine(){
 	killSDL();
@@ -17,6 +19,8 @@ void GraphicsEngine::createScreen(){
 }
 void GraphicsEngine::killSDL(){
     SDL_FreeSurface(screen);
+    if(upperLayer!=NULL) SDL_FreeSurface(upperLayer);
+    if(background!=NULL) SDL_FreeSurface(background);
 	SDL_Quit();
 }
 void GraphicsEngine::setMouseListener(MouseListener * mListen){
@@ -87,7 +91,6 @@ void GraphicsEngine::checkEvents(){
 			keyboardListener->keyPressed(defineKey(&event));
 		}
 		if(event.type == SDL_KEYUP){
-			cout<<"Key Released!\n";
 			if(keyboardListener== NULL)
 				return;
 			keyboardListener->keyReleased(defineKey(&event));
@@ -106,13 +109,19 @@ void GraphicsEngine::delayScreen(int time){
 	SDL_Delay(time);
 }
 bool GraphicsEngine::refreshScreen(){
+    if(upperLayer!=NULL)
+		SDL_FreeSurface(upperLayer);
+	delete upperLayer;
+	upperLayer=SDL_GetVideoSurface();
+	addSurface(0,0,background,upperLayer);
+	drawGameObjects();
+	addSurface(0,0,upperLayer,screen);
 	return SDL_Flip(screen)!= -1;
 }
 bool GraphicsEngine::setBackground(string filename){
-	SDL_Surface * backgroundImage= loadImage(filename);
-	if(backgroundImage==NULL)
+	background= loadImage(filename);
+	if(background==NULL)
 		return false;
-    addSurface( 0,0,backgroundImage,screen);
     return true;
 }
 void GraphicsEngine::addSurface(int x, int y, SDL_Surface * source, SDL_Surface * destination){
@@ -134,4 +143,29 @@ SDL_Surface * GraphicsEngine::loadImage(string filename){
 		SDL_FreeSurface(temp);
 	}
 	return opt;
+}
+void GraphicsEngine::drawGameObjects(){
+	for(int i=0;i<screenObjects.size();i++){
+    	GameObject* temp=screenObjects[i];
+    	addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],upperLayer); 	
+	}
+}
+int GraphicsEngine::addGameObject(GameObject * obj){
+	screenObjects.push_back(obj);
+    objectSurfaces.push_back(loadImage(obj->getImage()->getFilename()));
+	return screenObjects.size()-1;
+}
+void GraphicsEngine::removeGameObject(int id){
+	if(id>=screenObjects.size())
+		return;
+	screenObjects.erase(screenObjects.begin()+id);
+	objectSurfaces.erase(objectSurfaces.begin()+id);
+}
+void GraphicsEngine::removeGameObject(GameObject* obj){
+	for(int i=0;i<screenObjects.size();i++){
+		if(screenObjects[i]==obj){
+			screenObjects.erase(screenObjects.begin()+i);
+			objectSurfaces.erase(objectSurfaces.begin()+i);
+		}
+	}
 }

@@ -3,8 +3,12 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 #include "EventListener.h"
+#include "GameObject.h"
+#include "Point.h"
+#include "Image.h"
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -15,10 +19,17 @@ class GraphicsEngine{
 	    MouseListener *mouseListener;
 	    KeyboardListener *keyboardListener;
 	    SDL_Surface *screen;
+	    SDL_Surface *upperLayer;
+	    SDL_Surface *background;
+    	
+    	vector<GameObject*> screenObjects; 
+		vector<SDL_Surface*> objectSurfaces;
+
 		SDL_Surface * loadImage(string);
 		KeyboardEvent* defineKey(SDL_Event*);
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*);
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*,SDL_Rect*);
+		void drawGameObjects();
 	public:
 	    GraphicsEngine(int,int,int);
         ~GraphicsEngine();
@@ -29,10 +40,12 @@ class GraphicsEngine{
 		void setTitle(string);
 		bool setBackground(string);
 		bool refreshScreen();
-		int addImage(string);
 		void setMouseListener(MouseListener *);
 		void setKeyboardListener(KeyboardListener *);
 		void checkEvents();
+		int addGameObject(GameObject*);
+		void removeGameObject(int);
+		void removeGameObject(GameObject*);
 };
 
 #endif                                                
