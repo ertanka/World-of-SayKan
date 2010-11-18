@@ -111,12 +111,12 @@ void GraphicsEngine::delayScreen(int time){
 }
 bool GraphicsEngine::refreshScreen(){
 	addSurface(0,0,background,screen);
+	drawGameObjects();
 	if(smallBG){
 		//Fill rectangles with black; 0x000000
     	SDL_FillRect(screen,sideRect,0x000000);
     	SDL_FillRect(screen,downRect,0x000000);
 	}
-	drawGameObjects();
 	return SDL_Flip(screen)!= -1;
 }
 bool GraphicsEngine::setBackground(string filename){
