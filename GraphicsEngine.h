@@ -15,9 +15,13 @@ using namespace std;
 class GraphicsEngine{
 	private:
 	    int screenWidth,screenHeight,screenBPP;
+
+	    uint updateTime,eventTime,refreshTime;
+
    		SDL_Event event;
 	    MouseListener *mouseListener;
 	    KeyboardListener *keyboardListener;
+
 	    SDL_Surface *screen;
 	    SDL_Surface *background;
 	    
@@ -42,13 +46,18 @@ class GraphicsEngine{
 		void setTitle(string);
 		bool setBackground(string);
 		bool refreshScreen();
+		void checkEvents();
+		void updateGame();
 		void setMouseListener(MouseListener *);
 		void setKeyboardListener(KeyboardListener *);
-		void checkEvents();
 		int addGameObject(GameObject*);
 		void removeGameObject(int);
 		void removeGameObject(GameObject*);
 		void clearGameObjects();
+		uint getUpdateTime();
+		uint getEventTime();
+		uint getRefreshTime();
+		int getFPS();
 };
 
 #endif                                                

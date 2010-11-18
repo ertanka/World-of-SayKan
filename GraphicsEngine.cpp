@@ -6,6 +6,10 @@ GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
         smallBG=false;
         sideRect=NULL;
         downRect=NULL;
+        //avoid divide by 0 
+        updateTime=1;
+        eventTime=1;
+        refreshTime=1;
    		screenWidth=width;
        	screenHeight=height;
        	screenBPP=bpp;
@@ -85,6 +89,7 @@ KeyboardEvent* GraphicsEngine::defineKey(SDL_Event* ev){
 	}
 }
 void GraphicsEngine::checkEvents(){
+	uint start=SDL_GetTicks();
 	while(SDL_PollEvent(&event)){
 		if(event.type == SDL_KEYDOWN){
 			if(keyboardListener==NULL)
@@ -102,6 +107,12 @@ void GraphicsEngine::checkEvents(){
 			exit(0);
 		}
 	}
+    eventTime=SDL_GetTicks()-start;
+}
+void GraphicsEngine::updateGame(){
+	uint start=SDL_GetTicks();
+	updateTime=SDL_GetTicks()-start;
+	return;
 }
 void GraphicsEngine::setTitle(string title){
 	SDL_WM_SetCaption(title.c_str(),NULL);
@@ -110,6 +121,8 @@ void GraphicsEngine::delayScreen(int time){
 	SDL_Delay(time);
 }
 bool GraphicsEngine::refreshScreen(){
+	uint start=SDL_GetTicks();
+	cout<<start<<"--";
 	addSurface(0,0,background,screen);
 	drawGameObjects();
 	if(smallBG){
@@ -117,6 +130,8 @@ bool GraphicsEngine::refreshScreen(){
     	SDL_FillRect(screen,sideRect,0x000000);
     	SDL_FillRect(screen,downRect,0x000000);
 	}
+	refreshTime=SDL_GetTicks()-start;
+	cout<<SDL_GetTicks()<<endl;
 	return SDL_Flip(screen)!= -1;
 }
 bool GraphicsEngine::setBackground(string filename){
@@ -195,4 +210,27 @@ void GraphicsEngine::removeGameObject(GameObject* obj){
 void GraphicsEngine::clearGameObjects(){
 	objectSurfaces.clear();
 	screenObjects.clear();
+}
+
+uint GraphicsEngine::getUpdateTime(){
+	return updateTime;
+}
+uint GraphicsEngine::getEventTime(){
+	return eventTime;                
+}
+uint GraphicsEngine::getRefreshTime(){
+	return refreshTime;
+}
+/**
+ * all 3 functions;
+ * refreshScreen,checkEvents,updateGame
+ * should have been called before getting the FPS
+ * this result may be wrong otherwise..
+ * use getUpdateTime,getEventTime and getRefreshTime if you wont
+ * call all functions
+ * !!Returns maximum fps possible.. not the actual FPS!!
+ * TODO: real FPS may be? :)
+ */
+int GraphicsEngine::getFPS(){
+	return 1000/((int)(refreshTime+eventTime+updateTime));
 }
