@@ -19,8 +19,10 @@ class GraphicsEngine{
 	    MouseListener *mouseListener;
 	    KeyboardListener *keyboardListener;
 	    SDL_Surface *screen;
-	    SDL_Surface *upperLayer;
 	    SDL_Surface *background;
+	    
+	    bool smallBG;
+	    SDL_Rect* sideRect,*downRect;
     	
     	vector<GameObject*> screenObjects; 
 		vector<SDL_Surface*> objectSurfaces;
@@ -46,6 +48,7 @@ class GraphicsEngine{
 		int addGameObject(GameObject*);
 		void removeGameObject(int);
 		void removeGameObject(GameObject*);
+		void clearGameObjects();
 };
 
 #endif                                                

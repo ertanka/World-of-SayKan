@@ -2,14 +2,14 @@
 
 GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
        	SDL_Init(SDL_INIT_EVERYTHING);
-       	upperLayer=NULL;
        	background=NULL;
-       	screenWidth=width;
+        smallBG=false;
+        sideRect=NULL;
+        downRect=NULL;
+   		screenWidth=width;
        	screenHeight=height;
        	screenBPP=bpp;
        	createScreen();
-       	screenObjects=new vector<GameObject*>;
-       	objectSurfaces=new vector<SDL_Surface*>;
 	}
 GraphicsEngine::~GraphicsEngine(){
 	killSDL();
@@ -19,8 +19,9 @@ void GraphicsEngine::createScreen(){
 }
 void GraphicsEngine::killSDL(){
     SDL_FreeSurface(screen);
-    if(upperLayer!=NULL) SDL_FreeSurface(upperLayer);
     if(background!=NULL) SDL_FreeSurface(background);
+    if(sideRect!=NULL) delete sideRect;
+    if(downRect!=NULL) delete downRect;
 	SDL_Quit();
 }
 void GraphicsEngine::setMouseListener(MouseListener * mListen){
@@ -109,19 +110,41 @@ void GraphicsEngine::delayScreen(int time){
 	SDL_Delay(time);
 }
 bool GraphicsEngine::refreshScreen(){
-    if(upperLayer!=NULL)
-		SDL_FreeSurface(upperLayer);
-	delete upperLayer;
-	upperLayer=SDL_GetVideoSurface();
-	addSurface(0,0,background,upperLayer);
+	addSurface(0,0,background,screen);
+	if(smallBG){
+		//Fill rectangles with black; 0x000000
+    	SDL_FillRect(screen,sideRect,0x000000);
+    	SDL_FillRect(screen,downRect,0x000000);
+	}
 	drawGameObjects();
-	addSurface(0,0,upperLayer,screen);
 	return SDL_Flip(screen)!= -1;
 }
 bool GraphicsEngine::setBackground(string filename){
+	int sideSpace,downSpace;
 	background= loadImage(filename);
 	if(background==NULL)
 		return false;
+
+	//If background is smaller than the screen then set new SDL_Rects to fill
+	//remaining parts of screen
+    if(screenWidth>background->w){
+    	sideSpace=screenWidth-background->w;
+    	sideRect=new SDL_Rect();
+    	sideRect->x=background->w;
+    	sideRect->y=0;
+    	sideRect->w=sideSpace;
+    	sideRect->h=background->h;
+    	smallBG=true;
+	}
+    if(screenHeight>background->h){
+    	downSpace=screenHeight-background->h;
+    	downRect=new SDL_Rect();
+    	downRect->x=0;
+    	downRect->y=background->h;
+    	downRect->w=screenWidth;
+    	downRect->h=downSpace;
+    	smallBG=true;
+	}
     return true;
 }
 void GraphicsEngine::addSurface(int x, int y, SDL_Surface * source, SDL_Surface * destination){
@@ -147,7 +170,7 @@ SDL_Surface * GraphicsEngine::loadImage(string filename){
 void GraphicsEngine::drawGameObjects(){
 	for(int i=0;i<screenObjects.size();i++){
     	GameObject* temp=screenObjects[i];
-    	addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],upperLayer); 	
+    	addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],screen); 	
 	}
 }
 int GraphicsEngine::addGameObject(GameObject * obj){
@@ -168,4 +191,8 @@ void GraphicsEngine::removeGameObject(GameObject* obj){
 			objectSurfaces.erase(objectSurfaces.begin()+i);
 		}
 	}
+}
+void GraphicsEngine::clearGameObjects(){
+	objectSurfaces.clear();
+	screenObjects.clear();
 }
