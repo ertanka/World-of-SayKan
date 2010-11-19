@@ -122,7 +122,6 @@ void GraphicsEngine::delayScreen(int time){
 }
 bool GraphicsEngine::refreshScreen(){
 	uint start=SDL_GetTicks();
-	cout<<start<<"--";
 	addSurface(0,0,background,screen);
 	drawGameObjects();
 	if(smallBG){
@@ -131,7 +130,6 @@ bool GraphicsEngine::refreshScreen(){
     	SDL_FillRect(screen,downRect,0x000000);
 	}
 	refreshTime=SDL_GetTicks()-start;
-	cout<<SDL_GetTicks()<<endl;
 	return SDL_Flip(screen)!= -1;
 }
 bool GraphicsEngine::setBackground(string filename){
@@ -221,9 +219,19 @@ uint GraphicsEngine::getEventTime(){
 uint GraphicsEngine::getRefreshTime(){
 	return refreshTime;
 }
+/**gameLoopStart and gameLoopEnd is to calculate time pass for
+ * one loop..Only one frame should be processed in order to
+ * use getFPS.. otherwise calling getFPS would return useless results..
+ * using get**Time functions may be usefull for calculating fps otherwise
+ */
+void GraphicsEngine::gameLoopStart(){
+	loopStartTime=SDL_GetTicks();
+}
+void GraphicsEngine::gameLoopEnd(){
+	loopEndTime=SDL_GetTicks();
+}
 /**
- * all 3 functions;
- * refreshScreen,checkEvents,updateGame
+ * gameLoopStart and gameLoopEnd
  * should have been called before getting the FPS
  * this result may be wrong otherwise..
  * use getUpdateTime,getEventTime and getRefreshTime if you wont
@@ -232,5 +240,8 @@ uint GraphicsEngine::getRefreshTime(){
  * TODO: real FPS may be? :)
  */
 int GraphicsEngine::getFPS(){
-	return 1000/((int)(refreshTime+eventTime+updateTime));
+	int totalTime=loopEndTime-loopStartTime;
+	if(totalTime==0)
+		return -1;
+	return 1000/totalTime;
 }

@@ -15,16 +15,18 @@ int main(int argc, char* args[]){
 	engine->setKeyboardListener(new keyListen());
 	
 	for(int j=0;j<5;j++){
-    	engine->checkEvents();
 		GameObject *obj=new GameObject(new Image("background.jpg"));
 		engine->addGameObject(obj);
-		for(int i=0;i<500;i++)   {
+		for(int i=0;i<100;i++)   {
+    		engine->gameLoopStart();
+    		engine->checkEvents();
 	   		obj->setCords(new Point(2*i,i));
 	   		engine->checkEvents();
 	   		engine->updateGame();
 			engine->refreshScreen();
 			engine->delayScreen(5);
 		}
+		engine->gameLoopEnd();
 		cout<<engine->getFPS()<<endl;
 	}
 	//engine->removeGameObject(0);

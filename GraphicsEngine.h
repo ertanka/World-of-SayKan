@@ -17,6 +17,7 @@ class GraphicsEngine{
 	    int screenWidth,screenHeight,screenBPP;
 
 	    uint updateTime,eventTime,refreshTime;
+	    uint loopStartTime,loopEndTime;
 
    		SDL_Event event;
 	    MouseListener *mouseListener;
@@ -57,6 +58,8 @@ class GraphicsEngine{
 		uint getUpdateTime();
 		uint getEventTime();
 		uint getRefreshTime();
+		void gameLoopStart();
+		void gameLoopEnd();
 		int getFPS();
 };
 
