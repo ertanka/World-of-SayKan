@@ -2,3 +2,4 @@
  This will be a perfect readme of a perfect game :)
  -- END --
  :)
+g++ -lSDL -lSDL_image -lSDL_ttf GraphicsEngine.cpp GameObject.cpp tester.cpp -o GraphicsEngineTester

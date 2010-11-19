@@ -2,21 +2,21 @@
 #define GAME_OBJECT
 #include "Point.h"
 #include "Image.h"
+using namespace std;
 
 class GameObject{
 	private:
 		Point * location;
-		Point * target;
 		Image * image;
-		bool moving;
+		bool text;
 	public:
-		GameObject(Image*);
-		GameObject(Image*,Point*);
+		GameObject(string);
+		GameObject(string,bool);
+		GameObject(string,int,int);
+		GameObject(string,int,int,bool);
 		void setCords(Point*);
-		void setTarget(Point*);
 		Point* getCords();
-		Point* getTarget();
-		bool isMoving(); 
 		Image* getImage();
+		bool isText();
 };                    
 #endif

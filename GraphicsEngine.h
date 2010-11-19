@@ -2,6 +2,7 @@
 #define GRAPHICS_ENGINE
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+#include "SDL/SDL_ttf.h"
 #include "EventListener.h"
 #include "GameObject.h"
 #include "Point.h"
@@ -32,14 +33,18 @@ class GraphicsEngine{
     	vector<GameObject*> screenObjects; 
 		vector<SDL_Surface*> objectSurfaces;
 
+		SDL_Color textColor;
+		TTF_Font *textFont;
+		
 		SDL_Surface * loadImage(string);
 		KeyboardEvent* defineKey(SDL_Event*);
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*);
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*,SDL_Rect*);
 		void drawGameObjects();
+		int addGameObject(GameObject*,SDL_Surface*);
 	public:
 	    GraphicsEngine(int,int,int);
-        ~GraphicsEngine();
+        ~GraphicsEngine();                    
 		void createScreen();
 		void killSDL();
 		void delayScreen(int);
@@ -61,6 +66,9 @@ class GraphicsEngine{
 		void gameLoopStart();
 		void gameLoopEnd();
 		int getFPS();
+		void setTextFont(string,int);
+		void setTextColor(int,int,int);
+		int addText(string,int,int);
 };
 
 #endif                                                

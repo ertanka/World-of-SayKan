@@ -13,9 +13,14 @@ int main(int argc, char* args[]){
 	engine->setTitle("deneme");
 	engine->setBackground("background.jpg");
 	engine->setKeyboardListener(new keyListen());
-	
-	for(int j=0;j<5;j++){
-		GameObject *obj=new GameObject(new Image("background.jpg"));
+	engine->setTextColor(255,0,0);
+	engine->setTextFont("font.ttf",18);
+	GameObject *obj=new GameObject("background.jpg",100,100);
+	engine->addGameObject(obj);
+	cout<<engine->addText(string("Test is in progress..."),50,0)<<endl;
+		
+    for(int j=0;j<5;j++){
+		GameObject *obj=new GameObject("background.jpg");
 		engine->addGameObject(obj);
 		for(int i=0;i<100;i++)   {
     		engine->gameLoopStart();
@@ -30,7 +35,7 @@ int main(int argc, char* args[]){
 		cout<<engine->getFPS()<<endl;
 	}
 	//engine->removeGameObject(0);
-	engine->refreshScreen();
+	engine->refreshScreen();    
 	engine->delayScreen(3000);
 	engine->clearGameObjects();
 	engine->refreshScreen();

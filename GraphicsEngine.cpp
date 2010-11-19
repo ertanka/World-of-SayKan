@@ -2,6 +2,7 @@
 
 GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
        	SDL_Init(SDL_INIT_EVERYTHING);
+       	TTF_Init();
        	background=NULL;
         smallBG=false;
         sideRect=NULL;
@@ -14,6 +15,11 @@ GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
        	screenHeight=height;
        	screenBPP=bpp;
        	createScreen();
+       	//Default text color
+       	textColor.r=0xFF;
+       	textColor.g=0xFF;
+       	textColor.b=0xFF;
+       	textFont=NULL;
 	}
 GraphicsEngine::~GraphicsEngine(){
 	killSDL();
@@ -26,6 +32,7 @@ void GraphicsEngine::killSDL(){
     if(background!=NULL) SDL_FreeSurface(background);
     if(sideRect!=NULL) delete sideRect;
     if(downRect!=NULL) delete downRect;
+    TTF_Quit();
 	SDL_Quit();
 }
 void GraphicsEngine::setMouseListener(MouseListener * mListen){
@@ -180,16 +187,42 @@ SDL_Surface * GraphicsEngine::loadImage(string filename){
 	}
 	return opt;
 }
+void GraphicsEngine::setTextColor(int r,int g,int b){
+	textColor.r=r;
+	textColor.g=g;
+	textColor.b=b;
+}
+void GraphicsEngine::setTextFont(string fontName,int size){
+	textFont=TTF_OpenFont(fontName.c_str(),size);
+	cout<<TTF_GetError()<<endl;
+}
+int GraphicsEngine::addText(string text,int x,int y){
+    if(textFont==NULL){
+    	return -1;
+	}
+    SDL_Surface *textSurface=TTF_RenderText_Solid(textFont,text.c_str(),textColor);
+    if(textSurface==NULL){
+    	return -1;
+	}
+	return addGameObject(new GameObject(text,x,y,true),textSurface);
+}
 void GraphicsEngine::drawGameObjects(){
 	for(int i=0;i<screenObjects.size();i++){
     	GameObject* temp=screenObjects[i];
+    	if(temp->isText()){
+    		cout<<"Here is a text"<<endl;
+    		cout<<temp->getCords()->getX()<<endl;
+		}
     	addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],screen); 	
 	}
 }
-int GraphicsEngine::addGameObject(GameObject * obj){
+int GraphicsEngine::addGameObject(GameObject * obj,SDL_Surface* surface){
 	screenObjects.push_back(obj);
-    objectSurfaces.push_back(loadImage(obj->getImage()->getFilename()));
+    objectSurfaces.push_back(surface);
 	return screenObjects.size()-1;
+}
+int GraphicsEngine::addGameObject(GameObject* obj){
+	return addGameObject(obj,loadImage(obj->getImage()->getFilename()));
 }
 void GraphicsEngine::removeGameObject(int id){
 	if(id>=screenObjects.size())
@@ -241,7 +274,7 @@ void GraphicsEngine::gameLoopEnd(){
  */
 int GraphicsEngine::getFPS(){
 	int totalTime=loopEndTime-loopStartTime;
-	if(totalTime==0)
+if(totalTime==0)
 		return -1;
 	return 1000/totalTime;
 }
