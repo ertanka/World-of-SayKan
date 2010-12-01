@@ -14,6 +14,7 @@
 using namespace std;
 
 class GraphicsEngine{
+typedef bool (GraphicsEngine::*cleaningFunc)();
 	private:
 	    int screenWidth,screenHeight,screenBPP;
 
@@ -28,8 +29,9 @@ class GraphicsEngine{
 	    SDL_Surface *background;
 	    
 	    bool smallBG;
-	    SDL_Rect* sideRect,*downRect;
-    	
+	    SDL_Rect* sideRect,*downRect;	 
+       	cleaningFunc funcToCall;
+
     	vector<GameObject*> screenObjects; 
 		vector<SDL_Surface*> objectSurfaces;
 
@@ -40,8 +42,9 @@ class GraphicsEngine{
 		KeyboardEvent* defineKey(SDL_Event*);
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*);
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*,SDL_Rect*);
-		void drawGameObjects();
+		bool drawGameObjects();
 		int addGameObject(GameObject*,SDL_Surface*);
+		bool clearBGRemainder();
 	public:
 	    GraphicsEngine(int,int,int);
         ~GraphicsEngine();                    
@@ -69,6 +72,7 @@ class GraphicsEngine{
 		void setTextFont(string,int);
 		void setTextColor(int,int,int);
 		int addText(string,int,int);
+		void setClearBGRemainder(bool);
 };
 
 #endif                                                

@@ -12,6 +12,7 @@ int main(int argc, char* args[]){
 	GraphicsEngine *engine=new GraphicsEngine(640,480,32);
 	engine->setTitle("deneme");
 	engine->setBackground("background.jpg");
+   // engine->setClearBGRemainder(false);
 	engine->setKeyboardListener(new keyListen());
 	engine->setTextColor(255,0,0);
 	engine->setTextFont("font.ttf",18);
@@ -36,7 +37,6 @@ int main(int argc, char* args[]){
 	}
 	//engine->removeGameObject(0);
 	engine->refreshScreen();    
-	engine->delayScreen(3000);
 	engine->clearGameObjects();
 	engine->refreshScreen();
 }

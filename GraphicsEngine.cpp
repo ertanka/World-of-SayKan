@@ -130,12 +130,7 @@ void GraphicsEngine::delayScreen(int time){
 bool GraphicsEngine::refreshScreen(){
 	uint start=SDL_GetTicks();
 	addSurface(0,0,background,screen);
-	drawGameObjects();
-	if(smallBG){
-		//Fill rectangles with black; 0x000000
-    	SDL_FillRect(screen,sideRect,0x000000);
-    	SDL_FillRect(screen,downRect,0x000000);
-	}
+	(this->*funcToCall)();
 	refreshTime=SDL_GetTicks()-start;
 	return SDL_Flip(screen)!= -1;
 }
@@ -165,7 +160,24 @@ bool GraphicsEngine::setBackground(string filename){
     	downRect->h=downSpace;
     	smallBG=true;
 	}
+	if(smallBG)
+		funcToCall=&GraphicsEngine::clearBGRemainder;
+	else 
+		funcToCall=&GraphicsEngine::drawGameObjects;
     return true;
+}
+bool GraphicsEngine::clearBGRemainder(){
+	bool result=drawGameObjects();
+	//Fill rectangles with black; 0x000000
+	SDL_FillRect(screen,sideRect,0x000000);
+	SDL_FillRect(screen,downRect,0x000000);
+	return result;
+}
+void GraphicsEngine::setClearBGRemainder(bool flag){
+	if(flag)
+		funcToCall=&GraphicsEngine::clearBGRemainder;
+	else 
+		funcToCall=&GraphicsEngine::drawGameObjects;
 }
 void GraphicsEngine::addSurface(int x, int y, SDL_Surface * source, SDL_Surface * destination){
 	addSurface(x,y,source,destination,NULL);
@@ -206,7 +218,9 @@ int GraphicsEngine::addText(string text,int x,int y){
 	}
 	return addGameObject(new GameObject(text,x,y,true),textSurface);
 }
-void GraphicsEngine::drawGameObjects(){
+bool GraphicsEngine::drawGameObjects(){
+	if(screenObjects.size()==0)
+		return false;
 	for(int i=0;i<screenObjects.size();i++){
     	GameObject* temp=screenObjects[i];
     	if(temp->isText()){
@@ -215,6 +229,7 @@ void GraphicsEngine::drawGameObjects(){
 		}
     	addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],screen); 	
 	}
+	return true;	
 }
 int GraphicsEngine::addGameObject(GameObject * obj,SDL_Surface* surface){
 	screenObjects.push_back(obj);
