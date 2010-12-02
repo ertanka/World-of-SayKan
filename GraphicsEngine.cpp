@@ -1,9 +1,11 @@
 #include "GraphicsEngine.h"
 
 GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
-       	SDL_Init(SDL_INIT_EVERYTHING);
+       	//Initialize SDL
+    	SDL_Init(SDL_INIT_EVERYTHING);
        	TTF_Init();
-       	background=NULL;
+        //For clearing outside of the background image if it is smaller than window size
+		background=NULL;
         smallBG=false;
         sideRect=NULL;
         downRect=NULL;
@@ -11,6 +13,7 @@ GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
         updateTime=1;
         eventTime=1;
         refreshTime=1;
+
    		screenWidth=width;
        	screenHeight=height;
        	screenBPP=bpp;
@@ -24,9 +27,13 @@ GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
 GraphicsEngine::~GraphicsEngine(){
 	killSDL();
 }
+/**
+ * Creates a drawable screen
+ */
 void GraphicsEngine::createScreen(){
 	screen=SDL_SetVideoMode(screenWidth,screenHeight,screenBPP,SDL_SWSURFACE);
 }
+
 void GraphicsEngine::killSDL(){
     SDL_FreeSurface(screen);
     if(background!=NULL) SDL_FreeSurface(background);
@@ -35,12 +42,28 @@ void GraphicsEngine::killSDL(){
     TTF_Quit();
 	SDL_Quit();
 }
+/** 
+ * Sets the mouse listener of graphic engine..
+ * Listener should implement the MouseListener interface
+ * The given object's mouse listener functions will be called
+ * when there is a mouse event. Mouse events will be ignored if
+ * no mouse listeners set.
+ */
 void GraphicsEngine::setMouseListener(MouseListener * mListen){
 	mouseListener=mListen;
 }
+/**
+ * Same consepts as setMouseListener..
+ * Keyboard events also will be ignored if no keyboard listners set
+ */
 void GraphicsEngine::setKeyboardListener(KeyboardListener *kListen){
 	keyboardListener=kListen;
 }
+/**
+ * This functions tries to change SDL key event to
+ * GraphicsEngine key event.. 
+ * TODO: It may be moved to a better place.
+ */
 KeyboardEvent* GraphicsEngine::defineKey(SDL_Event* ev){
  	switch(ev->key.keysym.sym){
     	case SDLK_LEFT:
@@ -95,6 +118,15 @@ KeyboardEvent* GraphicsEngine::defineKey(SDL_Event* ev){
     		return new KeyboardEvent();
 	}
 }
+/**
+ * This is the starter function of game loop..
+ * It simply checks the event pool to get any keyboard or
+ * mouse events that occured.
+ * It controls both of the event listeners to call their 
+ * listener functions
+ * This function has its time counter and its run time can be
+ * get via getEventTime function.
+ */
 void GraphicsEngine::checkEvents(){
 	uint start=SDL_GetTicks();
 	while(SDL_PollEvent(&event)){
@@ -116,17 +148,40 @@ void GraphicsEngine::checkEvents(){
 	}
     eventTime=SDL_GetTicks()-start;
 }
+/**
+ * Currently does nothing.. 
+ * It should update game objects' current location and image
+ * TODO implement update procedure..
+ * TODO AnimatingGameObject can be written before implementing this.
+ * >>AnimatingGameObject has more then one image and has a bool which is 
+ * used to check whether the object is moving now or not<<
+ */
 void GraphicsEngine::updateGame(){
 	uint start=SDL_GetTicks();
 	updateTime=SDL_GetTicks()-start;
 	return;
 }
+/**
+ * Set Window Title
+ */
 void GraphicsEngine::setTitle(string title){
 	SDL_WM_SetCaption(title.c_str(),NULL);
 }
+/**
+ * Delays the screen. 
+ * Events do not interrupt the delay.. so 
+ * keyboard and mouse events and system events
+ * are not effective during this time. So using delayScreen(1000) or
+ * similar function calls can be a problem.
+ * TODO events may interrupt delay? or some events may interrupt like system events
+ */
 void GraphicsEngine::delayScreen(int time){
 	SDL_Delay(time);
 }
+/**
+ * Redraws the game objects to the screen
+ * Last part of the game loop
+ */
 bool GraphicsEngine::refreshScreen(){
 	uint start=SDL_GetTicks();
 	addSurface(0,0,background,screen);
@@ -166,6 +221,14 @@ bool GraphicsEngine::setBackground(string filename){
 		funcToCall=&GraphicsEngine::drawGameObjects;
     return true;
 }
+/**
+ * Clears the outside parts of the background image
+ * This may be avoided by setting the window size accurately
+ * or disabling this feature by setClearBGRemainder(false);
+ * it may slow down the execution by %10 currently
+ * TODO: this slow down may be avoided by creating a filter layer
+ * >>I dont know how<<
+ */
 bool GraphicsEngine::clearBGRemainder(){
 	bool result=drawGameObjects();
 	//Fill rectangles with black; 0x000000
@@ -179,6 +242,9 @@ void GraphicsEngine::setClearBGRemainder(bool flag){
 	else 
 		funcToCall=&GraphicsEngine::drawGameObjects;
 }
+/**
+ * Adds given surface to given positions..
+ */
 void GraphicsEngine::addSurface(int x, int y, SDL_Surface * source, SDL_Surface * destination){
 	addSurface(x,y,source,destination,NULL);
 }
@@ -189,6 +255,10 @@ void GraphicsEngine::addSurface(int x, int y,SDL_Surface * source, SDL_Surface *
  	offset.y=y;
  	SDL_BlitSurface(source,part,destination,&offset);
 }
+/**
+ * Loads the image and returns a surface.. It is used when creating a gameObject
+ * or other objects which requires image to draw on screen
+ */
 SDL_Surface * GraphicsEngine::loadImage(string filename){
 	SDL_Surface * temp=NULL;
 	SDL_Surface * opt=NULL;
@@ -204,6 +274,11 @@ void GraphicsEngine::setTextColor(int r,int g,int b){
 	textColor.g=g;
 	textColor.b=b;
 }
+/** 
+ * A truetype font should be given..
+ * Hadn't check with non truetype fonts
+ * TODO segfault if cant find the given font we may fix it
+ */
 void GraphicsEngine::setTextFont(string fontName,int size){
 	textFont=TTF_OpenFont(fontName.c_str(),size);
 	cout<<TTF_GetError()<<endl;
@@ -218,6 +293,12 @@ int GraphicsEngine::addText(string text,int x,int y){
 	}
 	return addGameObject(new GameObject(text,x,y,true),textSurface);
 }
+/**
+ * Draws all game objects in screenObjects to the screen
+ * screenObjects vector is only the object container
+ * on the other hand objectSurfaces vector holds loaded images so as to
+ * reduce system load every time. 
+ */
 bool GraphicsEngine::drawGameObjects(){
 	if(screenObjects.size()==0)
 		return false;
