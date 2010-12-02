@@ -69,6 +69,7 @@ typedef bool (GraphicsEngine::*cleaningFunc)();
 		void gameLoopStart();
 		void gameLoopEnd();
 		int getFPS();
+		void fixFPS(int); //TODO may try to fix FPS to the given value
 		void setTextFont(string,int);
 		void setTextColor(int,int,int);
 		int addText(string,int,int);
