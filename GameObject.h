@@ -5,18 +5,19 @@
 using namespace std;
 
 class GameObject{
-	private:
+	protected:
 		Point * location;
 		Image * image;
-		bool text;
 	public:
 		GameObject(string);
-		GameObject(string,bool);
 		GameObject(string,int,int);
-		GameObject(string,int,int,bool);
+		GameObject();
 		void setCords(Point*);
 		Point* getCords();
 		Image* getImage();
 		bool isText();
+		bool isMoving();
+		bool isAnimating();
+		int getCurrentState();
 };                    
 #endif

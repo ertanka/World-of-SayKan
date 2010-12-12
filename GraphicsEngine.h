@@ -7,10 +7,16 @@
 #include "GameObject.h"
 #include "Point.h"
 #include "Image.h"
+#include "AnimatingGameObject.h"
+#include "TextObject.h"
 #include <iostream>
 #include <string>
 #include <vector>
 
+/*
+ * TODO: toolbox or some kind of button container may be useful
+ * TODO: basic gui objects like buttons may be good
+ */
 using namespace std;
 
 class GraphicsEngine{
@@ -38,8 +44,6 @@ typedef bool (GraphicsEngine::*cleaningFunc)();
 		SDL_Color textColor;
 		TTF_Font *textFont;
 		
-		SDL_Surface * loadImage(string);
-		KeyboardEvent* defineKey(SDL_Event*);
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*);
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*,SDL_Rect*);
 		bool drawGameObjects();
@@ -70,7 +74,7 @@ typedef bool (GraphicsEngine::*cleaningFunc)();
 		void gameLoopEnd();
 		int getFPS();
 		void fixFPS(int); //TODO may try to fix FPS to the given value
-		void setTextFont(string,int);
+		bool setTextFont(string,int);
 		void setTextColor(int,int,int);
 		int addText(string,int,int);
 		void setClearBGRemainder(bool);

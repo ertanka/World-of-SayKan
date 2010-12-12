@@ -1,26 +1,16 @@
 #include "GameObject.h"
 
+GameObject::GameObject(){
+	image=NULL;
+	location=new Point(0,0);
+}
 GameObject::GameObject(string name){
 	image=new Image(name);
 	location=new Point(0,0);
-	text=false;
-}
-GameObject::GameObject(string name,bool isText){
-	if(!isText)
-		image=new Image(name);
-	location=new Point(0,0);
-	this->text=isText;
 }
 GameObject::GameObject(string name, int x,int y){
 	image=new Image(name);
 	location=new Point(x,y);
-	text=false;
-}
-GameObject::GameObject(string name,int x,int y,bool isText){
-	if(!isText)
-		image=new Image(name);
-	location=new Point(x,y);
-	this->text=isText;
 }
 void GameObject::setCords(Point * newCords){
 	location=newCords;
@@ -29,8 +19,17 @@ Point* GameObject::getCords(){
 	return location;
 }
 bool GameObject::isText(){
-	return text;
+	return false;
 }
 Image* GameObject::getImage(){
 	return image;
+}
+bool GameObject::isMoving(){
+	return false;
+}
+bool GameObject::isAnimating(){
+	return false;
+}
+int GameObject::getCurrentState(){
+	return 0;
 }

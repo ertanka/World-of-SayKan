@@ -1,5 +1,6 @@
 #include "GraphicsEngine.h"
-
+KeyboardEvent* defineKey(SDL_Event*);
+SDL_Surface * loadImage(string);
 GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
        	//Initialize SDL
     	SDL_Init(SDL_INIT_EVERYTHING);
@@ -58,65 +59,6 @@ void GraphicsEngine::setMouseListener(MouseListener * mListen){
  */
 void GraphicsEngine::setKeyboardListener(KeyboardListener *kListen){
 	keyboardListener=kListen;
-}
-/**
- * This functions tries to change SDL key event to
- * GraphicsEngine key event.. 
- * TODO: It may be moved to a better place.
- */
-KeyboardEvent* GraphicsEngine::defineKey(SDL_Event* ev){
- 	switch(ev->key.keysym.sym){
-    	case SDLK_LEFT:
-    		return new KeyboardEvent(KeyboardEvent::LEFT);
-    		break;
-    	case SDLK_RIGHT:
-    		return new KeyboardEvent(KeyboardEvent::RIGHT);
-    		break;
-    	case SDLK_UP:
-			return new KeyboardEvent(KeyboardEvent::UP);
-    		break;
-    	case SDLK_DOWN:
-    		return new KeyboardEvent(KeyboardEvent::DOWN);
-    		break;
-    	case SDLK_0:
-    		return new KeyboardEvent(KeyboardEvent::NUM0);
-    		break;
-    	case SDLK_1:
-    		return new KeyboardEvent(KeyboardEvent::NUM1);
-    		break;
-    	case SDLK_2:
-    		return new KeyboardEvent(KeyboardEvent::NUM2);
-    		break;
-    	case SDLK_3:
-    		return new KeyboardEvent(KeyboardEvent::NUM3);
-    		break;
-    	case SDLK_4:
-    		return new KeyboardEvent(KeyboardEvent::NUM4);
-    		break;
-    	case SDLK_5:
-    		return new KeyboardEvent(KeyboardEvent::NUM5);
-    		break;
-    	case SDLK_6:
-    		return new KeyboardEvent(KeyboardEvent::NUM6);
-    		break;
-    	case SDLK_7:
-    		return new KeyboardEvent(KeyboardEvent::NUM7);
-    		break;
-    	case SDLK_8:
-    		return new KeyboardEvent(KeyboardEvent::NUM8);
-    		break;
-    	case SDLK_9:
-    		return new KeyboardEvent(KeyboardEvent::NUM9);
-    		break;
-    	case SDLK_ASTERISK:
-    		return new KeyboardEvent(KeyboardEvent::LSTAR);
-    		break;
-    	case SDLK_MINUS:
-    		return new KeyboardEvent(KeyboardEvent::LMINUS);
-    		break;
-    	default:
-    		return new KeyboardEvent();
-	}
 }
 /**
  * This is the starter function of game loop..
@@ -259,13 +201,25 @@ void GraphicsEngine::addSurface(int x, int y,SDL_Surface * source, SDL_Surface *
  * Loads the image and returns a surface.. It is used when creating a gameObject
  * or other objects which requires image to draw on screen
  */
-SDL_Surface * GraphicsEngine::loadImage(string filename){
+SDL_Surface * loadImage(string filename){
 	SDL_Surface * temp=NULL;
 	SDL_Surface * opt=NULL;
 	temp=IMG_Load(filename.c_str());
 	if(temp!=NULL){
 		opt=SDL_DisplayFormat(temp);
 		SDL_FreeSurface(temp);
+	}
+	return opt;
+}
+SDL_Surface * loadMultipleImage(AnimatingGameObject *obj){
+	SDL_Surface *temp=NULL;
+	SDL_Surface *opt=new SDL_Surface[obj->getMaxState()];
+	for(int i=0;i<obj->getMaxState();i++){
+		temp=IMG_Load(obj->getFilename(i).c_str());
+		if(temp!=NULL){
+			opt[i]=*SDL_DisplayFormat(temp);
+			SDL_FreeSurface(temp);
+		}
 	}
 	return opt;
 }
@@ -277,11 +231,10 @@ void GraphicsEngine::setTextColor(int r,int g,int b){
 /** 
  * A truetype font should be given..
  * Hadn't check with non truetype fonts
- * TODO segfault if cant find the given font we may fix it
  */
-void GraphicsEngine::setTextFont(string fontName,int size){
+bool GraphicsEngine::setTextFont(string fontName,int size){
 	textFont=TTF_OpenFont(fontName.c_str(),size);
-	cout<<TTF_GetError()<<endl;
+	return textFont!=NULL;
 }
 int GraphicsEngine::addText(string text,int x,int y){
     if(textFont==NULL){
@@ -291,7 +244,7 @@ int GraphicsEngine::addText(string text,int x,int y){
     if(textSurface==NULL){
     	return -1;
 	}
-	return addGameObject(new GameObject(text,x,y,true),textSurface);
+	return addGameObject(new TextObject(x,y),textSurface);
 }
 /**
  * Draws all game objects in screenObjects to the screen
@@ -304,11 +257,10 @@ bool GraphicsEngine::drawGameObjects(){
 		return false;
 	for(int i=0;i<screenObjects.size();i++){
     	GameObject* temp=screenObjects[i];
-    	if(temp->isText()){
-    		cout<<"Here is a text"<<endl;
-    		cout<<temp->getCords()->getX()<<endl;
-		}
-    	addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],screen); 	
+    	if(!temp->isMoving())
+    		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],screen); 	
+		else
+    		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i]+temp->getCurrentState(),screen); 	       
 	}
 	return true;	
 }
@@ -318,6 +270,10 @@ int GraphicsEngine::addGameObject(GameObject * obj,SDL_Surface* surface){
 	return screenObjects.size()-1;
 }
 int GraphicsEngine::addGameObject(GameObject* obj){
+	if(obj->isAnimating()) {
+		AnimatingGameObject * tmp=reinterpret_cast<AnimatingGameObject*> (obj);
+		return addGameObject(tmp,loadMultipleImage(tmp));
+	}
 	return addGameObject(obj,loadImage(obj->getImage()->getFilename()));
 }
 void GraphicsEngine::removeGameObject(int id){
@@ -374,3 +330,65 @@ if(totalTime==0)
 		return -1;
 	return 1000/totalTime;
 }
+
+//non-class functions
+
+/**
+ * This functions tries to change SDL key event to
+ * GraphicsEngine key event.. 
+ */
+KeyboardEvent* defineKey(SDL_Event* ev){
+ 	switch(ev->key.keysym.sym){
+    	case SDLK_LEFT:
+    		return new KeyboardEvent(KeyboardEvent::LEFT);
+    		break;
+    	case SDLK_RIGHT:
+    		return new KeyboardEvent(KeyboardEvent::RIGHT);
+    		break;
+    	case SDLK_UP:
+			return new KeyboardEvent(KeyboardEvent::UP);
+    		break;
+    	case SDLK_DOWN:
+    		return new KeyboardEvent(KeyboardEvent::DOWN);
+    		break;
+    	case SDLK_0:
+    		return new KeyboardEvent(KeyboardEvent::NUM0);
+    		break;
+    	case SDLK_1:
+    		return new KeyboardEvent(KeyboardEvent::NUM1);
+    		break;
+    	case SDLK_2:
+    		return new KeyboardEvent(KeyboardEvent::NUM2);
+    		break;
+    	case SDLK_3:
+    		return new KeyboardEvent(KeyboardEvent::NUM3);
+    		break;
+    	case SDLK_4:
+    		return new KeyboardEvent(KeyboardEvent::NUM4);
+    		break;
+    	case SDLK_5:
+    		return new KeyboardEvent(KeyboardEvent::NUM5);
+    		break;
+    	case SDLK_6:
+    		return new KeyboardEvent(KeyboardEvent::NUM6);
+    		break;
+    	case SDLK_7:
+    		return new KeyboardEvent(KeyboardEvent::NUM7);
+    		break;
+    	case SDLK_8:
+    		return new KeyboardEvent(KeyboardEvent::NUM8);
+    		break;
+    	case SDLK_9:
+    		return new KeyboardEvent(KeyboardEvent::NUM9);
+    		break;
+    	case SDLK_ASTERISK:
+    		return new KeyboardEvent(KeyboardEvent::LSTAR);
+    		break;
+    	case SDLK_MINUS:
+    		return new KeyboardEvent(KeyboardEvent::LMINUS);
+    		break;
+    	default:
+    		return new KeyboardEvent();
+	}
+}
+
