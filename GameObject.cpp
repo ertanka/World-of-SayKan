@@ -3,14 +3,17 @@
 GameObject::GameObject(){
 	image=NULL;
 	location=new Point(0,0);
+	speed=0;
 }
 GameObject::GameObject(string name){
 	image=new Image(name);
 	location=new Point(0,0);
+	speed=0;
 }
 GameObject::GameObject(string name, int x,int y){
 	image=new Image(name);
 	location=new Point(x,y);
+	speed=0;
 }
 void GameObject::setCords(Point * newCords){
 	location=newCords;
@@ -42,4 +45,9 @@ void GameObject::stopMotion(){
 bool GameObject::isMoving(){
 	return target!=NULL && location!=target;
 }
-
+int GameObject::getSpeed(){
+	return speed;
+}
+void GameObject::setSpeed(int s){
+	speed=s;
+}

@@ -12,10 +12,12 @@ class TextObject:public GameObject{
 		TextObject(){
 			location= new Point(0,0);
 			image=NULL;
+        	speed=0;
 		}
 		TextObject(int x,int y){
 			location=new Point(x,y);
 			image=NULL;
+			speed=0;
 		}
 		bool isText(){
 			return true;

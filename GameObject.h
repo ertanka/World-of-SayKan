@@ -9,6 +9,7 @@ class GameObject{
 		Point * location;
 		Image * image;
 		Point * target;
+		int speed;
 	public:
 		GameObject(string);
 		GameObject(string,int,int);
@@ -23,5 +24,7 @@ class GameObject{
 		void setTarget(int,int);
 		void setTarget(Point *);
 		void stopMotion();
+		int getSpeed();
+		void setSpeed(int);
 };                    
 #endif
