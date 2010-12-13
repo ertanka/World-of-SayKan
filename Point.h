@@ -14,5 +14,11 @@ class Point{
 		int getY(){
 			return y;
 		}
+		bool operator==(Point &p){
+			return this->getX()==p.getX() && this->getY()==p.getY();
+		}
+		bool operator!=(Point &p){
+			return *this!=p;
+		}
 };
 #endif

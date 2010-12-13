@@ -30,7 +30,7 @@ int main(int argc, char* args[]){
 	   		engine->checkEvents();
 	   		engine->updateGame();
 			engine->refreshScreen();
-			engine->delayScreen(5000);
+			engine->delayScreen(5);
 		}
 		engine->gameLoopEnd();
 		cout<<engine->getFPS()<<endl;

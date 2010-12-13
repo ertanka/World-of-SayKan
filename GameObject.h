@@ -8,6 +8,7 @@ class GameObject{
 	protected:
 		Point * location;
 		Image * image;
+		Point * target;
 	public:
 		GameObject(string);
 		GameObject(string,int,int);
@@ -19,5 +20,8 @@ class GameObject{
 		bool isMoving();
 		bool isAnimating();
 		int getCurrentState();
+		void setTarget(int,int);
+		void setTarget(Point *);
+		void stopMotion();
 };                    
 #endif

@@ -257,7 +257,7 @@ bool GraphicsEngine::drawGameObjects(){
 		return false;
 	for(int i=0;i<screenObjects.size();i++){
     	GameObject* temp=screenObjects[i];
-    	if(!temp->isMoving())
+    	if(!temp->isAnimating())
     		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],screen); 	
 		else
     		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i]+temp->getCurrentState(),screen); 	       

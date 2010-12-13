@@ -24,12 +24,22 @@ bool GameObject::isText(){
 Image* GameObject::getImage(){
 	return image;
 }
-bool GameObject::isMoving(){
-	return false;
-}
 bool GameObject::isAnimating(){
 	return false;
 }
 int GameObject::getCurrentState(){
 	return 0;
 }
+void GameObject::setTarget(int x,int y){
+	target=new Point(x,y);
+}
+void GameObject::setTarget(Point * newCords){
+	target=newCords;
+}
+void GameObject::stopMotion(){
+	target=NULL;
+}
+bool GameObject::isMoving(){
+	return target!=NULL && location!=target;
+}
+

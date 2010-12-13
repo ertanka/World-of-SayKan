@@ -12,22 +12,24 @@ using namespace std;
 class AnimatingGameObject:public GameObject{
 	private:
 		int currentState,maxState;
-		bool moving;
+        bool animating;
         vector<string> filenames;
 	public:
 		AnimatingGameObject(){
 			location=new Point(0,0);
 			currentState=0;
 			maxState=0;
-			moving=false;
+			animating=false;
 		}
 		AnimatingGameObject(int x ,int y){
 			location=new Point(x,y);
 			maxState=0;
 			currentState=0;
-			moving=false;
+			animating=false;
 		}		
 		int getCurrentState(){
+			if(!animating)
+				return 0;
 			return currentState;
 		}
 		int getMaxState(){
@@ -36,14 +38,20 @@ class AnimatingGameObject:public GameObject{
 		string getFilename(int index){
 			return filenames[index];
 		}
-		bool isMoving(){
-			return moving;
-		}
 		bool isText(){
 			return false;
 		}
 		bool isAnimating(){
-			return true;
+			return animating;
+		}
+		void animate(){
+			animating=true;
+		}
+		void stopAnimation(){
+			animating=false;
+		}
+		void toggleAnimation(){
+			animating= !animating;
 		}
 		void increaseState(){
 			currentState=(currentState+1)%maxState;
