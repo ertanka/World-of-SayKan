@@ -94,12 +94,13 @@ void GraphicsEngine::checkEvents(){
  * Currently does nothing.. 
  * It should update game objects' current location and image
  * TODO implement update procedure..
- * TODO AnimatingGameObject can be written before implementing this.
- * >>AnimatingGameObject has more then one image and has a bool which is 
- * used to check whether the object is moving now or not<<
  */
 void GraphicsEngine::updateGame(){
 	uint start=SDL_GetTicks();
+	for(int i=0;i<screenObjects.size();i++){
+		GameObject *temp=screenObjects[i];
+		//TODO update here!!
+	}
 	updateTime=SDL_GetTicks()-start;
 	return;
 }
