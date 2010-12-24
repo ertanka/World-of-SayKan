@@ -93,13 +93,15 @@ void GraphicsEngine::checkEvents(){
 /**
  * Currently does nothing.. 
  * It should update game objects' current location and image
- * TODO implement update procedure..
+ * TODO implement update procedure.. target feature not yet implemented!!
  */
 void GraphicsEngine::updateGame(){
 	uint start=SDL_GetTicks();
 	for(int i=0;i<screenObjects.size();i++){
 		GameObject *temp=screenObjects[i];
-		//TODO update here!!
+		if(temp->isAnimating()){
+			((AnimatingGameObject *)temp)->increaseState();
+		}
 	}
 	updateTime=SDL_GetTicks()-start;
 	return;

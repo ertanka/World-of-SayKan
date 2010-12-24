@@ -4,11 +4,14 @@ class keyListen:public KeyboardListener{
 	public:
         keyListen(){
 		}
-		void keyPressed(KeyboardEvent* event){}
+		void keyPressed(KeyboardEvent* event){
+			cout<<"Aha bastı!\n";
+		}
 		void keyReleased(KeyboardEvent * event){}
 };
 
-int main(int argc, char* args[]){
+/*	FPS Test main
+    int main(int argc, char* args[]){
 	GraphicsEngine *engine=new GraphicsEngine(640,480,32);
 	engine->setTitle("deneme");
 	engine->setBackground("background.jpg");
@@ -39,5 +42,28 @@ int main(int argc, char* args[]){
 	engine->refreshScreen();    
 	engine->clearGameObjects();
 	engine->refreshScreen();
-}
+}*/
+	int main(int argc,char * args[]){
+     	GraphicsEngine *engine=new GraphicsEngine(640,480,32);
+     	engine->setTitle("Animatee!");
+     	engine->setBackground("background.jpg");
+     	engine->setClearBGRemainder(false);
+     	engine->refreshScreen();
+	    engine->setKeyboardListener(new keyListen());
+	    AnimatingGameObject *ago = new AnimatingGameObject(10,10);
+	    ago->addState("anim1.jpg");
+	    ago->addState("anim2.jpg");
+	    ago->addState("anim3.jpg");
+	    //ago->animate();
+	    engine->addGameObject(ago);
+	    while(1){
+	    	engine->gameLoopStart();
+	    	engine->checkEvents();
+	    	engine->updateGame();
+	    	engine->refreshScreen();
+	    	engine->delayScreen(500);
+	    	engine->gameLoopEnd();
+	    	cout<<"FPS: "<<engine->getFPS()<<endl;
+		}
+	}
 

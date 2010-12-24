@@ -10,6 +10,7 @@ class GameObject{
 		Image * image;
 		Point * target;
 		int speed;
+		bool animating;
 	public:
 		GameObject(string);
 		GameObject(string,int,int);

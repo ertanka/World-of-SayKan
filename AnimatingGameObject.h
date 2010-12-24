@@ -2,6 +2,7 @@
 #define ANIMATING_GAME_OBJECT
 #include <string>
 #include <vector>
+#include <iostream>
 using namespace std;
 
 /**
@@ -12,7 +13,6 @@ using namespace std;
 class AnimatingGameObject:public GameObject{
 	private:
 		int currentState,maxState;
-        bool animating;
         vector<string> filenames;
 	public:
 		AnimatingGameObject(){
@@ -43,9 +43,6 @@ class AnimatingGameObject:public GameObject{
 		bool isText(){
 			return false;
 		}
-		bool isAnimating(){
-			return animating;
-		}
 		void animate(){
 			animating=true;
 		}
@@ -57,6 +54,7 @@ class AnimatingGameObject:public GameObject{
 		}
 		void increaseState(){
 			currentState=(currentState+1)%maxState;
+			cout<<"Current animation state= "<<currentState<<endl;
 		}
 		bool setState(int s){
 			if(s>=maxState)
@@ -65,6 +63,8 @@ class AnimatingGameObject:public GameObject{
             return true;
 		}
 		int addState(string filename){
+			if(maxState==0)
+				image=new Image(filename);
 			filenames.push_back(filename);
 			maxState++;
 			return maxState-1;
