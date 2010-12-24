@@ -35,6 +35,11 @@ void GraphicsEngine::createScreen(){
 	screen=SDL_SetVideoMode(screenWidth,screenHeight,screenBPP,SDL_SWSURFACE);
 }
 
+/**
+ * The necessary things to finilize the SDL
+ * adding new sdl features may lead an addition to here!
+ * like sdl-mixer etc..
+ */
 void GraphicsEngine::killSDL(){
     SDL_FreeSurface(screen);
     if(background!=NULL) SDL_FreeSurface(background);
@@ -68,6 +73,9 @@ void GraphicsEngine::setKeyboardListener(KeyboardListener *kListen){
  * listener functions
  * This function has its time counter and its run time can be
  * get via getEventTime function.
+ * TODO collecting the currently pressed and not released keys and defining new events for them
+ * may be useful.. ex: for ctrl+a or alt+e or something.. However current keyboardEvent probably
+ * will need to be changed..(maybe adding a get super key and get key functions? )
  */
 void GraphicsEngine::checkEvents(){
 	uint start=SDL_GetTicks();
@@ -91,9 +99,8 @@ void GraphicsEngine::checkEvents(){
     eventTime=SDL_GetTicks()-start;
 }
 /**
- * Currently does nothing.. 
  * It should update game objects' current location and image
- * TODO implement update procedure.. target feature not yet implemented!!
+ * TODO Target!.. GameObject and other related classes may be changed..
  */
 void GraphicsEngine::updateGame(){
 	uint start=SDL_GetTicks();
@@ -173,6 +180,7 @@ bool GraphicsEngine::setBackground(string filename){
  * it may slow down the execution by %10 currently
  * TODO: this slow down may be avoided by creating a filter layer
  * >>I dont know how<<
+ * TODO: background color may be changed? just black may not be enough..
  */
 bool GraphicsEngine::clearBGRemainder(){
 	bool result=drawGameObjects();
@@ -181,6 +189,10 @@ bool GraphicsEngine::clearBGRemainder(){
 	SDL_FillRect(screen,downRect,0x000000);
 	return result;
 }
+
+/**
+ * Sets whether the remaining parts of background should be filled or not
+ */
 void GraphicsEngine::setClearBGRemainder(bool flag){
 	if(flag)
 		funcToCall=&GraphicsEngine::clearBGRemainder;
@@ -214,6 +226,13 @@ SDL_Surface * loadImage(string filename){
 	}
 	return opt;
 }
+
+/**
+ * Loads all images of an AnimatingGameObject and returns it as an array
+ * this array goes into the "screenObjects"
+ * TODO not existing images may be removed from the gameObject? since it wont look good
+ * TODO getting lots of images from a single file may be implemented??
+ */
 SDL_Surface * loadMultipleImage(AnimatingGameObject *obj){
 	SDL_Surface *temp=NULL;
 	SDL_Surface *opt=new SDL_Surface[obj->getMaxState()];
@@ -247,7 +266,7 @@ int GraphicsEngine::addText(string text,int x,int y){
     if(textSurface==NULL){
     	return -1;
 	}
-	return addGameObject(new TextObject(x,y),textSurface);
+    return addGameObject(new TextObject(x,y),textSurface);
 }
 /**
  * Draws all game objects in screenObjects to the screen
