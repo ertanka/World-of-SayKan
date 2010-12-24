@@ -10,12 +10,13 @@ class keyListen:public KeyboardListener{
 		void keyReleased(KeyboardEvent * event){}
 };
 
-/*	FPS Test main
+//FPS Test main    
+/*
     int main(int argc, char* args[]){
 	GraphicsEngine *engine=new GraphicsEngine(640,480,32);
 	engine->setTitle("deneme");
 	engine->setBackground("background.jpg");
-   // engine->setClearBGRemainder(false);
+    engine->setClearBGRemainder(false);
 	engine->setKeyboardListener(new keyListen());
 	engine->setTextColor(255,0,0);
 	engine->setTextFont("font.ttf",18);
@@ -42,7 +43,8 @@ class keyListen:public KeyboardListener{
 	engine->refreshScreen();    
 	engine->clearGameObjects();
 	engine->refreshScreen();
-}*/
+}                                    */
+
 	int main(int argc,char * args[]){
      	GraphicsEngine *engine=new GraphicsEngine(640,480,32);
      	engine->setTitle("Animatee!");
@@ -54,7 +56,7 @@ class keyListen:public KeyboardListener{
 	    ago->addState("anim1.jpg");
 	    ago->addState("anim2.jpg");
 	    ago->addState("anim3.jpg");
-	    //ago->animate();
+	    ago->animate();
 	    engine->addGameObject(ago);
 	    while(1){
 	    	engine->gameLoopStart();
@@ -66,4 +68,4 @@ class keyListen:public KeyboardListener{
 	    	cout<<"FPS: "<<engine->getFPS()<<endl;
 		}
 	}
-
+                          
