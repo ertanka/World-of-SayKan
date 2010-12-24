@@ -11,6 +11,7 @@ class GameObject{
 		Point * target;
 		int speed;
 		bool animating;
+		int currentState;
 	public:
 		GameObject(string);
 		GameObject(string,int,int);

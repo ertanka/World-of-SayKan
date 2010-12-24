@@ -24,6 +24,7 @@ typedef bool (GraphicsEngine::*cleaningFunc)();
 	private:
 	    int screenWidth,screenHeight,screenBPP;
 
+int GlobalI;
 	    uint updateTime,eventTime,refreshTime;
 	    uint loopStartTime,loopEndTime;
 

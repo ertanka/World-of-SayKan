@@ -219,7 +219,7 @@ SDL_Surface * loadMultipleImage(AnimatingGameObject *obj){
 	SDL_Surface *opt=new SDL_Surface[obj->getMaxState()];
 	for(int i=0;i<obj->getMaxState();i++){
 		temp=IMG_Load(obj->getFilename(i).c_str());
-		if(temp!=NULL){
+		if(temp!=NULL){ //may occure a problem if one of the images are not there
 			opt[i]=*SDL_DisplayFormat(temp);
 			SDL_FreeSurface(temp);
 		}
@@ -264,8 +264,8 @@ bool GraphicsEngine::drawGameObjects(){
     		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],screen); 	
 		}
 		else{
+			temp=reinterpret_cast<AnimatingGameObject *> (temp);
     		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),&objectSurfaces[i][temp->getCurrentState()],screen);
-    		cout<<"Animating here!\n";
 		}
 	}
 	return true;	

@@ -12,7 +12,7 @@ using namespace std;
  */
 class AnimatingGameObject:public GameObject{
 	private:
-		int currentState,maxState;
+		int maxState;
         vector<string> filenames;
 	public:
 		AnimatingGameObject(){

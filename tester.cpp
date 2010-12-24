@@ -63,7 +63,7 @@ class keyListen:public KeyboardListener{
 	    	engine->checkEvents();
 	    	engine->updateGame();
 	    	engine->refreshScreen();
-	    	engine->delayScreen(500);
+	    	engine->delayScreen(5);
 	    	engine->gameLoopEnd();
 	    	cout<<"FPS: "<<engine->getFPS()<<endl;
 		}

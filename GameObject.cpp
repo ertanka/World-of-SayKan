@@ -5,19 +5,22 @@ GameObject::GameObject(){
 	location=new Point(0,0);
 	speed=0;
 	animating=false;
+	currentState=0;
 }
 GameObject::GameObject(string name){
 	image=new Image(name);
 	location=new Point(0,0);
 	speed=0;
 	animating=false;
+	currentState=0;
 }
 GameObject::GameObject(string name, int x,int y){
 	image=new Image(name);
 	location=new Point(x,y);
 	speed=0;
 	animating=false;
-}
+	currentState=0;
+}          
 void GameObject::setCords(Point * newCords){
 	location=newCords;
 }
@@ -34,7 +37,7 @@ bool GameObject::isAnimating(){
 	return animating;
 }
 int GameObject::getCurrentState(){
-	return 0;
+	return currentState;
 }
 void GameObject::setTarget(int x,int y){
 	target=new Point(x,y);
