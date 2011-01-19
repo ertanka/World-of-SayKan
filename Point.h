@@ -14,6 +14,12 @@ class Point{
 		int getY(){
 			return y;
 		}
+		int setX(int newX){
+			x=newX;
+		}
+		int setY(int newY){
+			y=newY;
+		}
 		bool operator==(Point &p){
 			return this->getX()==p.getX() && this->getY()==p.getY();
 		}

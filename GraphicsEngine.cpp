@@ -100,12 +100,12 @@ void GraphicsEngine::checkEvents(){
 }
 /**
  * It should update game objects' current location and image
- * TODO Target!.. GameObject and other related classes may be changed..
  */
 void GraphicsEngine::updateGame(){
 	uint start=SDL_GetTicks();
 	for(int i=0;i<screenObjects.size();i++){
 		GameObject *temp=screenObjects[i];
+		temp->updateMovement();
 		if(temp->isAnimating()){
 			((AnimatingGameObject *)temp)->increaseState();
 		}

@@ -1,23 +1,22 @@
 #include "GameObject.h"
-
 GameObject::GameObject(){
 	image=NULL;
 	location=new Point(0,0);
-	speed=0;
+	speed=1;
 	animating=false;
 	currentState=0;
 }
 GameObject::GameObject(string name){
 	image=new Image(name);
 	location=new Point(0,0);
-	speed=0;
+	speed=1;
 	animating=false;
 	currentState=0;
 }
 GameObject::GameObject(string name, int x,int y){
 	image=new Image(name);
 	location=new Point(x,y);
-	speed=0;
+	speed=1;
 	animating=false;
 	currentState=0;
 }          
@@ -48,6 +47,37 @@ void GameObject::setTarget(Point * newCords){
 void GameObject::stopMotion(){
 	target=NULL;
 }
+void GameObject::updateMovement(){
+	if(target!=NULL){
+		if(location==target){
+			target=NULL;
+		}                                         
+		
+		else{
+			location->setX(calculateLocation(location->getX(),target->getX()));
+			location->setY(calculateLocation(location->getY(),target->getY()));
+		}
+	}
+}
+int GameObject::calculateLocation(int currLoc,int targetPoint){
+	if(currLoc>targetPoint){
+		if((currLoc-speed)<targetPoint){
+			return targetPoint;
+		}
+		else{
+			return currLoc-speed;
+		}
+	}else if(currLoc<targetPoint){
+		if((currLoc+speed)>targetPoint){
+			return targetPoint;
+		}else{
+			return currLoc+speed;
+		}
+	}
+	return targetPoint;
+}
+
+		
 bool GameObject::isMoving(){
 	return target!=NULL && location!=target;
 }

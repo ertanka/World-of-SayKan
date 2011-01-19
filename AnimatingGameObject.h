@@ -20,14 +20,14 @@ class AnimatingGameObject:public GameObject{
 			currentState=0;
 			maxState=0;
 			animating=false;
-			speed=0;
+			speed=1;
 		}
 		AnimatingGameObject(int x ,int y){
 			location=new Point(x,y);
 			maxState=0;
 			currentState=0;
 			animating=false;
-			speed=0;
+			speed=1;
 		}		
 		int getCurrentState(){
 			if(!animating)

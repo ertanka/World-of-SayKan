@@ -28,5 +28,9 @@ class GameObject{
 		void stopMotion();
 		int getSpeed();
 		void setSpeed(int);
+		void updateMovement();
+
+	private:
+		int calculateLocation(int ,int); 
 };                    
 #endif

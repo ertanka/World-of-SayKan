@@ -53,6 +53,8 @@ class keyListen:public KeyboardListener{
      	engine->refreshScreen();
 	    engine->setKeyboardListener(new keyListen());
 	    AnimatingGameObject *ago = new AnimatingGameObject(10,10);
+	    ago->setTarget(200,200);
+	    ago->setSpeed(30);
 	    ago->addState("anim1.jpg");
 	    ago->addState("anim2.jpg");
 	    ago->addState("anim3.jpg");
