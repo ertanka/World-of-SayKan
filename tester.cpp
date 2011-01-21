@@ -1,4 +1,5 @@
 #include "GraphicsEngine.h"
+#include "widget/ProgressBar.h"
 
 class keyListen:public KeyboardListener{
 	public:
@@ -47,6 +48,7 @@ class keyListen:public KeyboardListener{
 
 	int main(int argc,char * args[]){
      	GraphicsEngine *engine=new GraphicsEngine(640,480,32);
+        engine->delayScreen(10000);
      	engine->setTitle("Animatee!");
      	engine->setBackground("background.jpg");
      	engine->setClearBGRemainder(false);

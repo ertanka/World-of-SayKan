@@ -9,6 +9,8 @@
 #include "Image.h"
 #include "AnimatingGameObject.h"
 #include "TextObject.h"
+#include "Color.h"
+#include "Widget.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -41,7 +43,7 @@ typedef bool (GraphicsEngine::*cleaningFunc)();
     	vector<GameObject*> screenObjects; 
 		vector<SDL_Surface*> objectSurfaces;
 
-		SDL_Color textColor;
+		Color textColor;
 		TTF_Font *textFont;
 		
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*);

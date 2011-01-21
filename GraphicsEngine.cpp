@@ -20,9 +20,9 @@ GraphicsEngine::GraphicsEngine(int width,int height, int bpp){
        	screenBPP=bpp;
        	createScreen();
        	//Default text color
-       	textColor.r=0xFF;
-       	textColor.g=0xFF;
-       	textColor.b=0xFF;
+       	textColor.setR(0xFF);
+       	textColor.setG(0xFF);
+       	textColor.setB(0xFF);
        	textFont=NULL;
 	}
 GraphicsEngine::~GraphicsEngine(){
@@ -246,9 +246,9 @@ SDL_Surface * loadMultipleImage(AnimatingGameObject *obj){
 	return opt;
 }
 void GraphicsEngine::setTextColor(int r,int g,int b){
-	textColor.r=r;
-	textColor.g=g;
-	textColor.b=b;
+	textColor.setR(r);
+	textColor.setG(g);
+	textColor.setB(b);
 }
 /** 
  * A truetype font should be given..
@@ -262,7 +262,7 @@ int GraphicsEngine::addText(string text,int x,int y){
     if(textFont==NULL){
     	return -1;
 	}
-    SDL_Surface *textSurface=TTF_RenderText_Solid(textFont,text.c_str(),textColor);
+    SDL_Surface *textSurface=TTF_RenderText_Solid(textFont,text.c_str(),textColor.getSDLColor());
     if(textSurface==NULL){
     	return -1;
 	}

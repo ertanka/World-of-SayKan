@@ -54,7 +54,6 @@ class AnimatingGameObject:public GameObject{
 		}
 		void increaseState(){
 			currentState=(currentState+1)%maxState;
-			cout<<"Current animation state= "<<currentState<<endl;
 		}
 		bool setState(int s){
 			if(s>=maxState)
