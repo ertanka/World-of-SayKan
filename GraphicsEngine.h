@@ -42,6 +42,7 @@ typedef bool (GraphicsEngine::*cleaningFunc)();
 
     	vector<GameObject*> screenObjects; 
 		vector<SDL_Surface*> objectSurfaces;
+	    vector<Widget*> widgets;
 
 		Color textColor;
 		TTF_Font *textFont;
@@ -49,6 +50,7 @@ typedef bool (GraphicsEngine::*cleaningFunc)();
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*);
     	void addSurface(int,int,SDL_Surface*,SDL_Surface*,SDL_Rect*);
 		bool drawGameObjects();
+		void drawWidgets();
 		int addGameObject(GameObject*,SDL_Surface*);
 		bool clearBGRemainder();
 	public:
@@ -79,7 +81,11 @@ typedef bool (GraphicsEngine::*cleaningFunc)();
 		bool setTextFont(string,int);
 		void setTextColor(int,int,int);
 		int addText(string,int,int);
+		int addWidget(Widget*);
+		void removeWidget(Widget*);
+		void removeWidget(int);
 		void setClearBGRemainder(bool);
+
 };
 
 #endif                                                

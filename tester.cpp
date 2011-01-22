@@ -48,15 +48,20 @@ class keyListen:public KeyboardListener{
 
 	int main(int argc,char * args[]){
      	GraphicsEngine *engine=new GraphicsEngine(640,480,32);
-        engine->delayScreen(10000);
      	engine->setTitle("Animatee!");
      	engine->setBackground("background.jpg");
      	engine->setClearBGRemainder(false);
      	engine->refreshScreen();
 	    engine->setKeyboardListener(new keyListen());
+	    ProgressBar *pb=new ProgressBar(30,200,1);
+	    engine->addWidget(pb);
+	    pb->setLocation(new Point(350,250));
+	    pb->setPercent(0);
+	    pb->setBarColor(new Color(255,0,0));
+	    pb->setBorderColor(new Color(0,255,0));
 	    AnimatingGameObject *ago = new AnimatingGameObject(10,10);
 	    ago->setTarget(200,200);
-	    ago->setSpeed(30);
+	    ago->setSpeed(3);
 	    ago->addState("anim1.jpg");
 	    ago->addState("anim2.jpg");
 	    ago->addState("anim3.jpg");
@@ -64,6 +69,7 @@ class keyListen:public KeyboardListener{
 	    engine->addGameObject(ago);
 	    while(1){
 	    	engine->gameLoopStart();
+	    	pb->setPercent(ago->getCords()->getX()/2);
 	    	engine->checkEvents();
 	    	engine->updateGame();
 	    	engine->refreshScreen();

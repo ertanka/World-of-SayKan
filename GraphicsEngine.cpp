@@ -110,6 +110,7 @@ void GraphicsEngine::updateGame(){
 			((AnimatingGameObject *)temp)->increaseState();
 		}
 	}
+	drawWidgets();
 	updateTime=SDL_GetTicks()-start;
 	return;
 }
@@ -207,7 +208,7 @@ void GraphicsEngine::addSurface(int x, int y, SDL_Surface * source, SDL_Surface 
 }
 void GraphicsEngine::addSurface(int x, int y,SDL_Surface * source, SDL_Surface * destination,SDL_Rect * part){
 
- 	SDL_Rect offset;
+ 	SDL_Rect offset;  
  	offset.x=x;
  	offset.y=y;
  	SDL_BlitSurface(source,part,destination,&offset);
@@ -289,18 +290,52 @@ bool GraphicsEngine::drawGameObjects(){
 	}
 	return true;	
 }
+
+/**
+ * Draws all widgets to the screen..
+ */
+void GraphicsEngine::drawWidgets(){
+	for(int i=0;i<widgets.size();i++){
+		Widget* temp=widgets[i];
+		temp->updateSurface();
+		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),temp->getSurface(),screen);
+	}
+}
+
 int GraphicsEngine::addGameObject(GameObject * obj,SDL_Surface* surface){
 	screenObjects.push_back(obj);
     objectSurfaces.push_back(surface);
 	return screenObjects.size()-1;
 }
 int GraphicsEngine::addGameObject(GameObject* obj){
+	//If the game object is an animating game object; there will be more than one
+	//Surfaces per object so we have to add them to the vector as a array of SDL_Surface
+	//Since our vector holds pointers, we just give a pointer which refers to an array.
 	if(obj->isAnimating()) {
 		AnimatingGameObject * tmp=reinterpret_cast<AnimatingGameObject*> (obj);
 		return addGameObject(tmp,loadMultipleImage(tmp));
 	}
 	return addGameObject(obj,loadImage(obj->getImage()->getFilename()));
 }
+
+int GraphicsEngine::addWidget(Widget* wid){
+	widgets.push_back(wid);
+	return widgets.size()-1;
+}
+void GraphicsEngine::removeWidget(Widget * wid){
+	for(int i=0;i<widgets.size();i++){
+		if(widgets[i]==wid){
+			widgets.erase(widgets.begin()+i);
+		}
+	}
+}
+
+void GraphicsEngine::removeWidget(int id){
+	if(id>=widgets.size())
+		return;
+	widgets.erase(widgets.begin()+id);
+}
+
 void GraphicsEngine::removeGameObject(int id){
 	if(id>=screenObjects.size())
 		return;

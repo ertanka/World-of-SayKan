@@ -1,2 +1,5 @@
+Visibility may be added to all screen objects?(This probably can decrease the performance however??)
+We may change TextObject to be a widget instead of game object??? We can change the text later by doing this.(We cant change the text after setting it for the first time now.)
 Can't clear the screen if background was not defined..
 AnimatingGameObject-->May be a counter not to increase state on every update
+New classes are not complete yet..
