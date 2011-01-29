@@ -4,3 +4,7 @@
  :)
 a new coder here:saydere
 g++ -lSDL -lSDL_image -lSDL_ttf GraphicsEngine.cpp GameObject.cpp tester.cpp -o GraphicsEngineTester
+
+MacOS compile command:
+g++ -lSDL -lSDL_image -lSDL_ttf -lSDLmain -framework Cocoa GraphicsEngine.cpp GameObject.cpp tester.cpp -o GraphicsEngineTester
+
