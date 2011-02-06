@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Animation.h"
+
 using namespace std;
 
 /**
@@ -12,30 +14,36 @@ using namespace std;
  */
 class AnimatingGameObject:public GameObject{
 	private:
-		int maxState;
         vector<string> filenames;
+        Animation *anim;
 	public:
 		AnimatingGameObject(){
 			location=new Point(0,0);
-			currentState=0;
-			maxState=0;
-			animating=false;
 			speed=1;
+			anim=new Animation();
+			animating=true;
 		}
 		AnimatingGameObject(int x ,int y){
 			location=new Point(x,y);
-			maxState=0;
-			currentState=0;
-			animating=false;
 			speed=1;
-		}		
+			anim=new Animation();
+			animating=true;
+		}	
+		AnimatingGameObject(int x, int y, vector<string> filenames){
+            location=new Point(x,y);
+            anim=new Animation(&filenames);
+            speed=1;
+			animating=true;
+		}
+
 		int getCurrentState(){
-			if(!animating)
+			if(!anim->isActive()) {
 				return 0;
-			return currentState;
+			}
+			return anim->getCurrentState();
 		}
 		int getMaxState(){
-			return maxState;
+			return anim->getMaxState();
 		}
 		string getFilename(int index){
 			return filenames[index];
@@ -44,29 +52,31 @@ class AnimatingGameObject:public GameObject{
 			return false;
 		}
 		void animate(){
-			animating=true;
+			anim->animate();
 		}
 		void stopAnimation(){
-			animating=false;
+			anim->stop();
 		}
 		void toggleAnimation(){
-			animating= !animating;
+			anim->toggle();
 		}
 		void increaseState(){
-			currentState=(currentState+1)%maxState;
+			anim->increaseState();
 		}
 		bool setState(int s){
-			if(s>=maxState)
-                 return false;
-            currentState=s;
-            return true;
+			return anim->setState(s);
 		}
+
 		int addState(string filename){
-			if(maxState==0)
-				image=new Image(filename);
 			filenames.push_back(filename);
-			maxState++;
-			return maxState-1;
+			if(anim!=NULL)
+				delete anim;
+			anim=new Animation(&filenames);
+			return anim->getMaxState()-1;
+		}
+
+		Animation* getAnimation(){
+			return anim;
 		}
 		
 };

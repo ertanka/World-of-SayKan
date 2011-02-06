@@ -8,6 +8,7 @@
 #include "Point.h"
 #include "Image.h"
 #include "AnimatingGameObject.h"
+#include "Animation.h"
 #include "TextObject.h"
 #include "Color.h"
 #include "Widget.h"

@@ -70,6 +70,7 @@ class keyListen:public KeyboardListener{
 	    while(1){
 	    	engine->gameLoopStart();
 	    	pb->setPercent(ago->getCords()->getX()/2);
+	    	cout<<ago->getAnimation()->getCurrentState()<<endl;
 	    	engine->checkEvents();
 	    	engine->updateGame();
 	    	engine->refreshScreen();

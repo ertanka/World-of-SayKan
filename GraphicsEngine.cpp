@@ -228,24 +228,7 @@ SDL_Surface * loadImage(string filename){
 	return opt;
 }
 
-/**
- * Loads all images of an AnimatingGameObject and returns it as an array
- * this array goes into the "screenObjects"
- * TODO not existing images may be removed from the gameObject? since it wont look good
- * TODO getting lots of images from a single file may be implemented??
- */
-SDL_Surface * loadMultipleImage(AnimatingGameObject *obj){
-	SDL_Surface *temp=NULL;
-	SDL_Surface *opt=new SDL_Surface[obj->getMaxState()];
-	for(int i=0;i<obj->getMaxState();i++){
-		temp=IMG_Load(obj->getFilename(i).c_str());
-		if(temp!=NULL){ //may occure a problem if one of the images are not there
-			opt[i]=*SDL_DisplayFormat(temp);
-			SDL_FreeSurface(temp);
-		}
-	}
-	return opt;
-}
+
 void GraphicsEngine::setTextColor(int r,int g,int b){
 	textColor.setR(r);
 	textColor.setG(g);
@@ -284,8 +267,7 @@ bool GraphicsEngine::drawGameObjects(){
     		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),objectSurfaces[i],screen); 	
 		}
 		else{
-			temp=reinterpret_cast<AnimatingGameObject *> (temp);
-    		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),&objectSurfaces[i][temp->getCurrentState()],screen);
+    		addSurface(temp->getCords()->getX(),temp->getCords()->getY(),&objectSurfaces[i][reinterpret_cast<AnimatingGameObject *> (temp)->getAnimation()->getCurrentState()],screen);
 		}
 	}
 	return true;	
@@ -313,8 +295,9 @@ int GraphicsEngine::addGameObject(GameObject* obj){
 	//Since our vector holds pointers, we just give a pointer which refers to an array.
 	if(obj->isAnimating()) {
 		AnimatingGameObject * tmp=reinterpret_cast<AnimatingGameObject*> (obj);
-		return addGameObject(tmp,loadMultipleImage(tmp));
+		return addGameObject(tmp,tmp->getAnimation()->getSurfaces());
 	}
+
 	return addGameObject(obj,loadImage(obj->getImage()->getFilename()));
 }
 
