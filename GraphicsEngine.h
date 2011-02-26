@@ -4,7 +4,7 @@
 #include "SDL/SDL_image.h"
 #include "SDL/SDL_ttf.h"
 #include "EventListener.h"
-#include "GameObject.h"
+#include "GameObject.cpp"
 #include "Point.h"
 #include "Image.h"
 #include "AnimatingGameObject.h"
