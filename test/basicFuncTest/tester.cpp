@@ -6,6 +6,7 @@ class keyListen:public KeyboardListener{
 	private:
 	
 		bool keyIsDown;
+		int keyCode;
 		
 	public:
 	
@@ -15,8 +16,11 @@ class keyListen:public KeyboardListener{
 	}
 	
 	void keyPressed(KeyboardEvent* event){
+	
 		cout<<"Aha bastı!\n";
+		keyCode = event->getKey();
 		keyIsDown = true;
+		
 	}
 	void keyReleased(KeyboardEvent * event){
 	
